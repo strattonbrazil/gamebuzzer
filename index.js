@@ -17,9 +17,6 @@ function isValidName (name) {
     return name != '';
 };
 
-var names = fs.readFileSync("randomWords").toString().split('\n').filter(isValidName);
-console.log(names);
-
 var databases = {};
 
 app.set('view engine', 'ejs');
@@ -32,37 +29,47 @@ app.get('/', function (req, res) {
     res.render('main');
 });
 
+function generateID()   {
+    var randomWords = fs.readFileSync("randomWords").toString().split('\n').filter(isValidName);
+    var idgoeshere = undefined;
+    while (idgoeshere == undefined) {
+        var random3 = undefined;
+        while (random3 == undefined) {
+            var randomA = randomWords[Math.floor(Math.random()*randomWords.length)];
+            var randomB = randomWords[Math.floor(Math.random()*randomWords.length)];
+            var randomC = randomWords[Math.floor(Math.random()*randomWords.length)];
+            if (randomA != randomB && randomB != randomC && randomC != randomA) {   // if none of those words match ...
+                random3 = randomA + randomB + randomC;  // make
+            };
+        };  // end of while loop generating 3 random words and forming them into a single string
+        if (random3 in databases == false)  {   // if the random word is not in the database
+            idgoeshere = random3;
+        };
+    };  // end of while loop defining idgoeshere
+    console.log('variable idgoeshere upon leaving generateID is ' + idgoeshere);
+    return idgoeshere;
+};  // end of generateID
+
 // leaves page one
 app.post('/g', function (req, res)  {
     console.log(req.body.groupNameText);
     var groupName = req.body.groupNameText;
-    var id = undefined;
-    while (id == undefined)    {
-        var temp = Math.round(1000000000*Math.random());
-        if (temp in databases == false)   { // if you don't find the variable temp in the databases dictionary ...
-            id = temp;
-        };
-    };
-
-    // old var id = Math.round(1000000000*Math.random());
+    var id = generateID();
     databases[id] = req.body.groupNameText;
     // TODO what if they already have the cookie set ... want to redirect them, send them page Two template ...
     res.cookie('buzztime', 5);
-    // document.cookie='gamemaster';   // should I set that as the groupName for security? so someone can't start a game and then switch games?
+    // document.cookie='gamemaster';   // should I set that as the groupName for security?
     res.redirect('/g/' + id);
-});
+}); // end of app.post
 
 // loads page two
 // ":" indicates "something here" not a specific reference to whats behind the slash
 app.get('/g/:id', function (req, res)   {
     var gameid = req.params.id;
-
-
     // TODO make sure gameid actually exists in the database, otherwise redirect to page not found or back to start
-    console.log(gameid);
+    console.log('gameid is ' + gameid);
     var gamename = databases[gameid];
-    console.log(gamename);
-    console.log(req.cookies.buzztime);
+    console.log('gamename is ' + gamename);
     // TODO set cookie to unique gameID, have it last for a day
 
     // if gamemaster then render pageTwo, else render page 3;
@@ -72,11 +79,7 @@ app.get('/g/:id', function (req, res)   {
     }   else {
         res.render('pageThree', { 'gamename' : gamename, 'gameid' : gameid });
     };
-
-
-});
-
-
+}); // end of app.get
 
 // so at this url one person will be a gamemaster and all others will be players
 // serve different templates to different people, same URL
