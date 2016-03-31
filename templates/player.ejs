@@ -1,0 +1,24 @@
+<%- include css.ejs %>
+
+
+<title> gameBuzzer  </title>
+
+<div class=container>
+    <div class="logo">
+        GAMEBUZZER
+    </div>
+    <div class="six columns offset-by-three">
+        Player template with gamename: <%= gamename %>.
+
+    </div>
+    <div class="six columns offset-by-three" id="results">
+    </div>
+    <div class="six columns offset-by-three">
+        <input type="submit" id="buzzer" value="BUZZER" />
+    </div>
+    <div class="six columns offset-by-three" id="results">
+    </div>
+</div>
+
+
+<%- include js.ejs %>

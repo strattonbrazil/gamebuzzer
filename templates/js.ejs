@@ -1,0 +1,28 @@
+
+<script src='/static/js/jquery-2.2.2.min.js'></script>
+<script src='/static/js/jquery.jrumble.1.3.min.js'></script>
+
+<script>
+$(function(){
+    $('.logo').jrumble({speed:0});
+
+    var demoStart = function(){
+       $('.logo').trigger('startRumble');
+       $('.logo').css('textShadow','#FF0 4px 4px,#FF0 -4px -4px');
+       setTimeout(demoStop, 300);
+    };
+    var demoStop = function(){
+       $('.logo').trigger('stopRumble');
+       $('.logo').css('textShadow','');
+       setTimeout(demoStart, 3000);
+    };
+    demoStart();
+});
+</script>
+
+
+
+<script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
+<script>
+  var socket = io.connect('http://localhost:3001');
+</script>

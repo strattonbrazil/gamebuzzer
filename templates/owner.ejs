@@ -1,0 +1,25 @@
+<%- include css.ejs %>
+
+<title> gameBuzzer  </title>
+
+
+<div class=container>
+    <div class="logo">
+        GAMEBUZZER
+    </div>
+    <div class="six columns offset-by-three">
+        Owner template for:  <%= gamename %>. <br>
+        The url to join this game is:
+        <br>
+        <%= joinUrl %>
+        <br>
+
+        <input type="submit" name="reset" value="RESET" />
+    </div>
+    <div class="six columns offset-by-three" id="results">
+        <!-- TODO import knockout library, try a for-each ... -->
+    </div>
+</div>
+
+
+<%- include js.ejs %>
