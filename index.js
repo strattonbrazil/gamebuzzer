@@ -11,7 +11,6 @@ app.use(cookieParser());
 var fs = require('fs'); // express, the library from which we are going to use some tools
 
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
 
 var spaceport = 3000;
 //var socketear = 3001;
@@ -88,7 +87,7 @@ app.get('/g/:id', function (req, res)   {
 app.use('/static', express.static(__dirname + '/public'));
 
 
-http.listen(spaceport, function () {
+var foo = http.listen(spaceport, function () {
   console.log('gameBuzzer listening for GETS on port: ' + spaceport);
 });
 // anonymous function is a start callback
@@ -96,6 +95,8 @@ http.listen(spaceport, function () {
 // app.listen(socketear, function(){
 //   console.log('gameBuzzer listening for socket io on port: ' + socketear);
 // });
+
+var io = require('socket.io')(foo);
 
 io.on('connection', function(socket){
   console.log('a user connected');
