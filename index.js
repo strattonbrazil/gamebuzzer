@@ -1,23 +1,20 @@
 console.log('index.js initialized');
 
-// TODO make gameIDs treated as lower caps, shown as each-word-capitalized
-
 var fs = require('fs'); // express, the library from which we are going to use some tools
 var express = require('express');   // express() is a constructor, calling 'var app' actually builds the app
 var app = express(); // when you get a 'post' request, parse it for me and put it in the request object
+
 var bodyParser = require('body-parser');
 app.use(bodyParser());
-
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
+var fs = require('fs'); // express, the library from which we are going to use some tools
 
-var http = require('http').Server(express);
+var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var spaceport = 3000;
-var socketear = 3001;
-
-//TODO should we encrypt or sign our cookies?
+//var socketear = 3001;
 
 var databases = {};
 
@@ -87,27 +84,22 @@ app.get('/g/:id', function (req, res)   {
     };
 }); // end of app.get
 
-// so at this url one person will be a gamemaster and all others will be players
-// serve different templates to different people, same URL
-// res.render('verb', {title: verbName, subtitle: description})
-
 // when you see someone trying to GET /static change that directory to /public
 app.use('/static', express.static(__dirname + '/public'));
 
 
-app.listen(spaceport, function () {
+http.listen(spaceport, function () {
   console.log('gameBuzzer listening for GETS on port: ' + spaceport);
 });
 // anonymous function is a start callback
 
-http.listen(socketear, function(){
-  console.log('gameBuzzer listening for socket io on port: ' + socketear);
-});
+// app.listen(socketear, function(){
+//   console.log('gameBuzzer listening for socket io on port: ' + socketear);
+// });
 
 io.on('connection', function(socket){
-  console.log('console log a user connected');
-  socket.emit('announcements', { message: 'A new user has joined!' });
-  socket.on('event', function(data) {
-       console.log('A client sent us this dumb message:', data.message);
-  };
+  console.log('a user connected');
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
 });
